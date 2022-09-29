@@ -53,7 +53,6 @@ fun CurrenciesList(header: String, currencies: List<Currency>, clickFavoritesBtn
                 Text(currencies[index].value.toString(), textAlign = TextAlign.Start)
                 Spacer(Modifier.weight(1f))
                 IconButton(onClick = { clickFavoritesBtn(currencies[index]) }) {
-                    Log.d("AAA", currencies[index].toString())
                     if (currencies[index].favorite) {
                         Icon(
                             Icons.Filled.Favorite,

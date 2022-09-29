@@ -3,6 +3,7 @@ package com.surodeev.currenciestestapplication.domain
 import android.util.Log
 import com.surodeev.currenciestestapplication.entity.CurrenciesState
 import com.surodeev.currenciestestapplication.entity.Currency
+import com.surodeev.currenciestestapplication.entity.FavoriteCurrency
 import com.surodeev.currenciestestapplication.repository.CurrenciesRepository
 import com.surodeev.currenciestestapplication.ui.viewmodel.FilterViewModel
 import javax.inject.Inject
@@ -12,25 +13,32 @@ import javax.inject.Singleton
 class CurrenciesInteractor @Inject constructor(private val repository: CurrenciesRepository) {
 
     fun getCurrencies(baseCurrency: String, sortVariant: FilterViewModel.SortVariant): CurrenciesState {
-        Log.e("ASD", "SSS")
         return try {
             val response = repository.getLatestRates("55jkKaGlIBlujIiY2vPmTGatN21b3Q1w", baseCurrency)
-            Log.d("AAA", response.toString())
             if (response.isSuccessful && response.body() != null) {
                 val body = response.body()
                 if (body != null) {
-                    CurrenciesState.Success(body.timestamp, body.rates.toCurrenciesList(sortVariant))
+                    val favoritesCurrencies = getFavoritesCurrencies()
+                    val favoritesCurrenciesList = mutableListOf<Currency>()
+                    val mainCurrenciesList = body.rates.toCurrenciesList(sortVariant).map { currency ->
+                        if (favoritesCurrencies.hasCodeMatch(currency.code)) {
+                            currency.favorite = true
+                            favoritesCurrenciesList.add(currency)
+                        }
+                        return@map currency
+                    }
+                    CurrenciesState.Success(
+                        body.timestamp,
+                        mainCurrenciesList,
+                        favoritesCurrenciesList
+                    )
                 } else {
-                    Log.d("AAA", "1")
                     CurrenciesState.Failed(response.errorBody()?.string() ?: "Unknown error")
                 }
             } else {
-                Log.d("AAA", "2")
                 CurrenciesState.Failed(response.errorBody()?.string() ?: "Unknown error")
             }
         } catch (e: Exception) {
-
-            Log.d("AAA", e.toString())
             CurrenciesState.Failed(e.message ?: "Unknown error")
         }
     }
@@ -42,6 +50,18 @@ class CurrenciesInteractor @Inject constructor(private val repository: Currencie
             FilterViewModel.SortVariant.VALUE_ASC -> unsortedRates.sortByValueAsc()
             FilterViewModel.SortVariant.VALUE_DESC -> unsortedRates.sortByValueDesc()
         }
+    }
+
+    fun getFavoritesCurrencies(): List<FavoriteCurrency> {
+        return repository.getFavoritesCurrencies()
+    }
+
+    fun insertFavoriteCurrency(favoriteCurrency: FavoriteCurrency) {
+        repository.insertFavoriteCurrency(favoriteCurrency)
+    }
+
+    fun deleteFavoriteCurrency(favoriteCurrency: FavoriteCurrency) {
+        repository.deleteFavoriteCurrency(favoriteCurrency)
     }
 
     private fun Map<String, Double>.toCurrenciesList(sortVariant: FilterViewModel.SortVariant): List<Currency> {
@@ -82,5 +102,12 @@ class CurrenciesInteractor @Inject constructor(private val repository: Currencie
             else if (first.value == second.value) 0
             else -1
         }
+    }
+
+    private fun List<FavoriteCurrency>.hasCodeMatch(code: String): Boolean {
+        forEach { currency ->
+            if (currency.code == code) return true
+        }
+        return false
     }
 }

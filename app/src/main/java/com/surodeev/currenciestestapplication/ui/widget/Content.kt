@@ -63,6 +63,8 @@ fun Content() {
     val coroutineScope = rememberCoroutineScope()
     val screenState = viewModel.screenState
 
+    Log.d("AAA", screenState.currenciesState.toString())
+
     ModalBottomSheetLayout(
         sheetState = sheetState,
         sheetContent = {
@@ -101,9 +103,12 @@ fun Content() {
                     innerPadding,
                     navController,
                     refreshing = screenState.currenciesState is CurrenciesState.Success && screenState.loading,
-                    screenState.currenciesState
+                    screenState.currenciesState,
+                    {
+                        viewModel.fetchData()
+                    }
                 ) {
-                    viewModel.fetchData()
+                    viewModel.clickFavoriteBtn(it)
                 }
             },
             bottomBar = {

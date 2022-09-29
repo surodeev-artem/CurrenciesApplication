@@ -15,6 +15,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.surodeev.currenciestestapplication.entity.BottomNavigationItem
 import com.surodeev.currenciestestapplication.entity.CurrenciesState
+import com.surodeev.currenciestestapplication.entity.Currency
 import com.surodeev.currenciestestapplication.ui.widget.currencies_base.FailedCurrenciesBase
 import com.surodeev.currenciestestapplication.ui.widget.currencies_base.InitialCurrenciesBase
 import com.surodeev.currenciestestapplication.ui.widget.currencies_base.SuccessCurrenciesBase
@@ -26,7 +27,8 @@ fun AppNavigation(
     navController: NavHostController,
     refreshing: Boolean,
     currenciesState: CurrenciesState,
-    refreshRates: () -> Unit
+    refreshRates: () -> Unit,
+    clickFavoriteBtn: (Currency) -> Unit
 ) {
     AnimatedNavHost(
         navController,
@@ -68,7 +70,9 @@ fun AppNavigation(
             ) {
                 when (currenciesState) {
                     is CurrenciesState.Success -> {
-                        SuccessCurrenciesBase(currenciesState)
+                        SuccessCurrenciesBase(currenciesState) {
+                            clickFavoriteBtn(it)
+                        }
                     }
 
                     is CurrenciesState.Initial -> {
@@ -112,7 +116,9 @@ fun AppNavigation(
         ) {
             when (currenciesState) {
                 is CurrenciesState.Success -> {
-                    SuccessCurrenciesBase(currenciesState)
+                    SuccessCurrenciesBase(currenciesState, true) {
+                        clickFavoriteBtn(it)
+                    }
                 }
 
                 is CurrenciesState.Initial -> {
