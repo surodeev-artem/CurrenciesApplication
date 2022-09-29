@@ -30,6 +30,8 @@ fun AppNavigation(
     refreshRates: () -> Unit,
     clickFavoriteBtn: (Currency) -> Unit
 ) {
+    val animationDuration = 300
+
     AnimatedNavHost(
         navController,
         startDestination = BottomNavigationItem.Popular.route,
@@ -40,25 +42,25 @@ fun AppNavigation(
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentScope.SlideDirection.Left,
-                    animationSpec = tween(700)
+                    animationSpec = tween(animationDuration)
                 )
             },
             exitTransition = {
                 slideOutOfContainer(
                     AnimatedContentScope.SlideDirection.Left,
-                    animationSpec = tween(700)
+                    animationSpec = tween(animationDuration)
                 )
             },
             popEnterTransition = {
                 slideIntoContainer(
                     AnimatedContentScope.SlideDirection.Right,
-                    animationSpec = tween(700)
+                    animationSpec = tween(animationDuration)
                 )
             },
             popExitTransition = {
                 slideOutOfContainer(
                     AnimatedContentScope.SlideDirection.Right,
-                    animationSpec = tween(700)
+                    animationSpec = tween(animationDuration)
                 )
             }
         ) {
@@ -92,25 +94,25 @@ fun AppNavigation(
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentScope.SlideDirection.Left,
-                    animationSpec = tween(700)
+                    animationSpec = tween(animationDuration)
                 )
             },
             exitTransition = {
                 slideOutOfContainer(
                     AnimatedContentScope.SlideDirection.Left,
-                    animationSpec = tween(700)
+                    animationSpec = tween(animationDuration)
                 )
             },
             popEnterTransition = {
                 slideIntoContainer(
                     AnimatedContentScope.SlideDirection.Right,
-                    animationSpec = tween(700)
+                    animationSpec = tween(animationDuration)
                 )
             },
             popExitTransition = {
                 slideOutOfContainer(
                     AnimatedContentScope.SlideDirection.Right,
-                    animationSpec = tween(700)
+                    animationSpec = tween(animationDuration)
                 )
             }
         ) {
