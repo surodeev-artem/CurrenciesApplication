@@ -15,7 +15,7 @@ class CurrenciesInteractor @Inject constructor(private val repository: Currencie
 
     fun getCurrencies(baseCurrency: String, sortVariant: FilterViewModel.SortVariant): CurrenciesState {
         return try {
-            val response = repository.getLatestRates("55jkKaGlIBlujIiY2vPmTGatN21b3Q1w", baseCurrency)
+            val response = repository.getLatestRates("M9S01geHvE8yc7VKXYkODNF7u8nZMd0r", baseCurrency)
             if (response.isSuccessful && response.body() != null) {
                 val body = response.body()
                 if (body != null) {
