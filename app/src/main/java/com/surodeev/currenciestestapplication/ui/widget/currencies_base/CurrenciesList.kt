@@ -1,6 +1,5 @@
 package com.surodeev.currenciestestapplication.ui.widget.currencies_base
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

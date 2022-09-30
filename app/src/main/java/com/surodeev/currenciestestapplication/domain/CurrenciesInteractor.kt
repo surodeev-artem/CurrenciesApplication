@@ -6,6 +6,7 @@ import com.surodeev.currenciestestapplication.entity.Currency
 import com.surodeev.currenciestestapplication.entity.FavoriteCurrency
 import com.surodeev.currenciestestapplication.repository.CurrenciesRepository
 import com.surodeev.currenciestestapplication.ui.viewmodel.FilterViewModel
+import com.surodeev.currenciestestapplication.ui.viewmodel.MainViewModel
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -33,12 +34,15 @@ class CurrenciesInteractor @Inject constructor(private val repository: Currencie
                         favoritesCurrenciesList
                     )
                 } else {
+                    Log.e("LATEST_CURRENCIES", response.errorBody()?.string() ?: "Unknown error")
                     CurrenciesState.Failed(response.errorBody()?.string() ?: "Unknown error")
                 }
             } else {
+                Log.e("LATEST_CURRENCIES", response.errorBody()?.string() ?: "Unknown error")
                 CurrenciesState.Failed(response.errorBody()?.string() ?: "Unknown error")
             }
         } catch (e: Exception) {
+            Log.e("LATEST_CURRENCIES", e.message ?: "Unknown error")
             CurrenciesState.Failed(e.message ?: "Unknown error")
         }
     }
@@ -52,15 +56,43 @@ class CurrenciesInteractor @Inject constructor(private val repository: Currencie
         }
     }
 
-    fun getFavoritesCurrencies(): List<FavoriteCurrency> {
+
+    fun clickFavoriteBtn(currency: Currency, screenState: MainViewModel.ScreenState): MainViewModel.ScreenState {
+        val tempCurrencies = mutableListOf<Currency>()
+        (screenState.currenciesState as CurrenciesState.Success).currencies.forEachIndexed { index, c ->
+            tempCurrencies.add(index, c.copy())
+            if (currency.code == c.code) {
+                tempCurrencies[index].favorite = !tempCurrencies[index].favorite
+                if (tempCurrencies[index].favorite) insertFavoriteCurrency(FavoriteCurrency(currency.code))
+                else deleteFavoriteCurrency(FavoriteCurrency(currency.code))
+            }
+        }
+
+        val tempFavoritesCurrencies = mutableListOf<Currency>()
+        tempFavoritesCurrencies.addAll(screenState.currenciesState.favoritesCurrencies)
+        if (tempFavoritesCurrencies.contains(currency)) {
+            tempFavoritesCurrencies.remove(currency)
+        } else {
+            tempFavoritesCurrencies.add(currency.apply { favorite = true })
+        }
+
+        return screenState.copy(
+            currenciesState = screenState.currenciesState.copy(
+                currencies = tempCurrencies,
+                favoritesCurrencies = tempFavoritesCurrencies
+            )
+        )
+    }
+
+    private fun getFavoritesCurrencies(): List<FavoriteCurrency> {
         return repository.getFavoritesCurrencies()
     }
 
-    fun insertFavoriteCurrency(favoriteCurrency: FavoriteCurrency) {
+    private fun insertFavoriteCurrency(favoriteCurrency: FavoriteCurrency) {
         repository.insertFavoriteCurrency(favoriteCurrency)
     }
 
-    fun deleteFavoriteCurrency(favoriteCurrency: FavoriteCurrency) {
+    private fun deleteFavoriteCurrency(favoriteCurrency: FavoriteCurrency) {
         repository.deleteFavoriteCurrency(favoriteCurrency)
     }
 

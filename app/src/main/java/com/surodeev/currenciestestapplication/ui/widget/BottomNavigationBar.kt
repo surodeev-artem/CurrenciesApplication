@@ -22,8 +22,8 @@ fun BottomNavigationBar(navController: NavController) {
         BottomNavigationItem.Favorites,
     )
 
-    BottomNavigation() {
-        pages.forEachIndexed() { _, page ->
+    BottomNavigation {
+        pages.forEachIndexed { _, page ->
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination?.route
 

@@ -18,7 +18,9 @@ fun FailedCurrenciesBase(refresh: () -> Unit) {
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Column {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text("Ошибка")
             Spacer(modifier = Modifier.height(8.dp))
             Button(

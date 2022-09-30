@@ -21,13 +21,11 @@ import com.surodeev.currenciestestapplication.ui.theme.Secondary
 fun SuccessAppBar(
     currencies: List<Currency>,
     baseCurrencyCode: String,
-    rowState: LazyListState,
     baseCurrencyClick: (String) -> Unit,
     filterClick: () -> Unit
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         LazyRow(
-            state = rowState,
             modifier = Modifier
                 .padding(horizontal = 8.dp)
                 .weight(1f),

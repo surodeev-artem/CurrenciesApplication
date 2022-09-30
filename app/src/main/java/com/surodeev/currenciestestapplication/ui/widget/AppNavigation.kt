@@ -1,6 +1,5 @@
 package com.surodeev.currenciestestapplication.ui.widget
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -64,12 +63,14 @@ fun AppNavigation(
                 )
             }
         ) {
+
             SwipeRefresh(
                 state = SwipeRefreshState(refreshing),
                 onRefresh = {
                     refreshRates()
                 }
             ) {
+
                 when (currenciesState) {
                     is CurrenciesState.Success -> {
                         SuccessCurrenciesBase(currenciesState) {
@@ -116,20 +117,27 @@ fun AppNavigation(
                 )
             }
         ) {
-            when (currenciesState) {
-                is CurrenciesState.Success -> {
-                    SuccessCurrenciesBase(currenciesState, true) {
-                        clickFavoriteBtn(it)
+            SwipeRefresh(
+                state = SwipeRefreshState(refreshing),
+                onRefresh = {
+                    refreshRates()
+                }
+            ) {
+                when (currenciesState) {
+                    is CurrenciesState.Success -> {
+                        SuccessCurrenciesBase(currenciesState, true) {
+                            clickFavoriteBtn(it)
+                        }
                     }
-                }
 
-                is CurrenciesState.Initial -> {
-                    InitialCurrenciesBase()
-                }
+                    is CurrenciesState.Initial -> {
+                        InitialCurrenciesBase()
+                    }
 
-                is CurrenciesState.Failed -> {
-                    FailedCurrenciesBase {
-                        refreshRates()
+                    is CurrenciesState.Failed -> {
+                        FailedCurrenciesBase {
+                            refreshRates()
+                        }
                     }
                 }
             }
